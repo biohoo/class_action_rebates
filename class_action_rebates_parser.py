@@ -20,7 +20,6 @@ selenium_site = driver.get(SITE)
 
 products = driver.find_elements_by_xpath('//*[@id="settlements"]/tbody/tr/td[2]/p')
 urls = driver.find_elements_by_xpath('//*[@id="settlements"]/tbody/tr/td[2]/p/a')
-estimates = driver.find_elements_by_xpath('//*[@id="settlements"]/tbody/tr/td[3]/p')
 proofs = driver.find_elements_by_xpath('//*[@id="settlements"]/tbody/tr/td[4]/p')
 deadlines = driver.find_elements_by_xpath('//*[@id="settlements"]/tbody/tr/td[5]/p')
 
@@ -39,6 +38,11 @@ def get_deadlines_return_status(deadlines):
 
     for deadline in deadlines:
         deadline = deadline.text.strip('\n')
+        if 'Pending' in deadline:
+            deadline = '1/1/1900'
+        if 'Estimated' in deadline:
+            deadline = deadline.split(' ')[0]
+
         try:
             as_datetime = parser.parse(deadline)
             single_or_multiple.append('Single Date')
@@ -75,13 +79,11 @@ print('number of records: ', number_of_records)
 
 proofs_list = [pr.text for pr in proofs]
 products_list = [pr.text.replace('\n',' ') for pr in products]
-estimates_list = [pr.text for pr in estimates]
 
 
 rebates_dict = {
     'Proof':proofs_list,
     'Products':products_list,
-    'Estimates':estimates_list,
     'Deadline_Status': deadline_status_list,
     'Single_Multiple': single_or_multiple_list,
     'Deadline_Date': date_as_datetime_list,
