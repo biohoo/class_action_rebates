@@ -77,31 +77,40 @@ for url in urls:
 
 print('number of records: ', number_of_records)
 
-proofs_list = [pr.text for pr in proofs]
-products_list = [pr.text.replace('\n',' ') for pr in products]
+def generate_proofs_report():
+
+    if number_of_records == 0:
+        print('Nothing to report.')
+        return
+
+    proofs_list = [pr.text for pr in proofs]
+    products_list = [pr.text.replace('\n',' ') for pr in products]
 
 
-rebates_dict = {
-    'Proof':proofs_list,
-    'Products':products_list,
-    'Deadline_Status': deadline_status_list,
-    'Single_Multiple': single_or_multiple_list,
-    'Deadline_Date': date_as_datetime_list,
-    'URL': urls_list
-}
+    rebates_dict = {
+        'Proof':proofs_list,
+        'Products':products_list,
+        'Deadline_Status': deadline_status_list,
+        'Single_Multiple': single_or_multiple_list,
+        'Deadline_Date': date_as_datetime_list,
+        'URL': urls_list
+    }
 
 
-df = pd.DataFrame.from_dict(rebates_dict)
-print(df)
+    df = pd.DataFrame.from_dict(rebates_dict)
+    print(df)
 
-df1 = df[(df.Proof != 'Yes') & (df.Deadline_Status != 'Expired')]
+    df1 = df[(df.Proof != 'Yes') & (df.Deadline_Status != 'Expired')]
 
-proofless_unexpired = len(df1)
+    proofless_unexpired = len(df1)
 
-print('''\n\n>>>>>> Filtered for unexpired and no proof of purchase <<<<<<''')
-print(df1[['URL','Products']])
-print('Number of proofless, unexpired records: ', proofless_unexpired)
-print('Percent of total: ', round((proofless_unexpired / number_of_records) * 100, 0))
+    print('''\n\n>>>>>> Filtered for unexpired and no proof of purchase <<<<<<''')
+    print(df1[['URL','Products']])
+    print('Number of proofless, unexpired records: ', proofless_unexpired)
+    if number_of_records > 0:
+        print('Percent of total: ', round((proofless_unexpired / number_of_records) * 100, 0))
 
-df1.to_csv('class_action_filtered.csv')
-df.to_csv('class_action.csv')
+    df1.to_csv('class_action_filtered.csv')
+    df.to_csv('class_action.csv')
+
+generate_proofs_report()
