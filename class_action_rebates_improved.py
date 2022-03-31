@@ -1,7 +1,6 @@
 import bs4 as bs
 import pandas as pd
 import requests
-import itertools
 
 SITE = 'http://www.classactionrebates.com'
 f = requests.get(SITE).text
